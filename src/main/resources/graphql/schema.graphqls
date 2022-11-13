@@ -1,0 +1,15 @@
+type Participant {
+    id: String!
+    usernames: [String]!
+    name: String!
+}
+
+# The Root Query for the application
+type Query {
+    participants: [Participant]!
+}
+
+# The Root Mutation for the application
+type Mutation {
+    createParticipant(username: String!, name: String!) : Participant!
+}
