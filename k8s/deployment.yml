@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: participant-service
+  labels:
+    app: participant-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: participant-service
+  template:
+    metadata:
+      labels:
+        app: participant-service
+    spec:
+      containers:
+        - name: participant-service
+          image: participant-service
+          imagePullPolicy: IfNotPresent
+          lifecycle:
+            preStop:
+              exec:
+                command: [ "sh", "-c", "sleep 5" ]
+          ports:
+            - containerPort: 9001
+          env:
+            - name: BPL_JVM_THREAD_COUNT
+              value: "50"
+            - name: SPRING_CLOUD_CONFIG_URI
+              value: http://config-service
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://rendezvous-postgres/rendezvousdb_participant
+            - name: SPRING_PROFILES_ACTIVE
+              value: testdata
