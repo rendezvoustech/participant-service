@@ -22,7 +22,7 @@ public class ParticipantRestControllerTests {
 
     @Test
     public void whenGetParticipantNotExistingThenShouldReturn404() throws Exception {
-        String id ="ID";
+        Long id =10L;
         given(participantService.viewDetails(id))
                 .willThrow(ParticipantNotFoundException.class);
         mockMvc.perform(get("/participants/" + id))

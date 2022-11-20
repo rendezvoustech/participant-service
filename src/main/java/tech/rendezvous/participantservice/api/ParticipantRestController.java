@@ -23,7 +23,7 @@ public class ParticipantRestController {
     }
 
     @GetMapping("{id}")
-    public Participant getParticipant(@PathVariable String id) {
+    public Participant getParticipant(@PathVariable Long id) {
         return participantService.viewDetails(id);
     }
 
@@ -35,12 +35,12 @@ public class ParticipantRestController {
 
     @DeleteMapping("{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable String id) {
+    public void delete(@PathVariable Long id) {
         participantService.remove(id);
     }
 
     @PutMapping("{id}")
-    public Participant put(@PathVariable String id, @RequestBody @Valid ParticipantModel model) {
+    public Participant put(@PathVariable Long id, @RequestBody @Valid ParticipantModel model) {
         return participantService.editDetails(id, model);
     }
 }

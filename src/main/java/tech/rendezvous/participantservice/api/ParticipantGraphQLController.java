@@ -8,7 +8,7 @@ import tech.rendezvous.participantservice.domain.Participant;
 import tech.rendezvous.participantservice.domain.ParticipantModel;
 import tech.rendezvous.participantservice.domain.ParticipantService;
 
-import java.util.Collections;
+import java.util.Set;
 
 @Controller
 public class ParticipantGraphQLController {
@@ -25,6 +25,6 @@ public class ParticipantGraphQLController {
 
     @MutationMapping()
     public Participant createParticipant(@Argument String username, @Argument String name) {
-        return participantService.add(new ParticipantModel(Collections.singletonList(username), name));
+        return participantService.add(new ParticipantModel(Set.of(username), name));
     }
 }

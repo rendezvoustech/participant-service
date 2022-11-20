@@ -8,6 +8,16 @@ server:
       min-spare: 5
 
 spring:
+  sql:
+    init:
+      mode: always
+  datasource:
+    username: user
+    password: password
+    url: jdbc:postgresql://localhost:5432/rendezvousdb_participant
+    hikari:
+      connection-timeout: 2000
+      maximum-pool-size: 5
   graphql:
     graphiql:
       enabled: true

@@ -1,16 +1,15 @@
 package tech.rendezvous.participantservice.domain;
 
-import java.util.Optional;
+import org.springframework.data.jdbc.repository.query.Query;
+import org.springframework.data.repository.CrudRepository;
 
-public interface ParticipantRepository {
-    Iterable<Participant> findAll();
-    Optional<Participant> findOne(String id);
+import java.util.List;
 
-    Participant add(ParticipantModel model);
+public interface ParticipantRepository extends CrudRepository<Participant, Long> {
 
-    Optional<Participant> findOneByUsername(String username);
+    @Query("SELECT * FROM participant p WHERE :username = ANY(p.usernames)")
+    List<Participant> findByUsername(String username);
 
-    void remove(String id);
 
-    Participant save(Participant update);
+
 }
