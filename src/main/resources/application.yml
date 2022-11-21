@@ -6,6 +6,7 @@ server:
     threads:
       max: 50
       min-spare: 5
+  shutdown: graceful
 
 spring:
   sql:
@@ -23,6 +24,8 @@ spring:
       enabled: true
   application:
     name: participant-service
+  lifecycle:
+    timeout-per-shutdown-phase: 15s
   config:
     import: "optional:configserver:"
     cloud:
