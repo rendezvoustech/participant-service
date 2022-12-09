@@ -19,11 +19,9 @@ public class ParticipantService {
     }
 
     public Participant add(ParticipantModel model) {
-        model.usernames().forEach(username -> {
-            if (!participantRepository.findByUsername(username).isEmpty())
-                throw new ParticipantWithUsernameAlreadyExistsException(username);
-        });
-        return participantRepository.save(Participant.of(model.usernames().stream().toList(), model.name()));
+        if (!participantRepository.findByUsername(model.username()).isEmpty())
+                throw new ParticipantWithUsernameAlreadyExistsException(model.username());
+        return participantRepository.save(Participant.of(model.username(), model.name()));
     }
 
     public void remove(Long id) {
@@ -35,7 +33,7 @@ public class ParticipantService {
                 .map(participant -> {
                     var toUpdate = new Participant(
                             participant.id(),
-                            model.usernames().stream().toList(),
+                            model.username(),
                             model.name(),
                             participant.createdDate(),
                             participant.lastModifiedDate(),

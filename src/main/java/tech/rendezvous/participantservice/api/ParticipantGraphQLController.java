@@ -25,6 +25,6 @@ public class ParticipantGraphQLController {
 
     @MutationMapping()
     public Participant createParticipant(@Argument String username, @Argument String name) {
-        return participantService.add(new ParticipantModel(Set.of(username), name));
+        return participantService.add(new ParticipantModel(username, name));
     }
 }

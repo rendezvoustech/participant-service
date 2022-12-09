@@ -4,11 +4,11 @@ import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ParticipantRepository extends CrudRepository<Participant, Long> {
 
-    @Query("SELECT * FROM participant p WHERE :username = ANY(p.usernames)")
-    List<Participant> findByUsername(String username);
+    Optional<Participant> findByUsername(String username);
 
 
 

@@ -12,7 +12,7 @@ public record Participant(
         @Id
         Long id,
 
-        List<String> usernames,
+        String username,
 
         String name,
 
@@ -26,7 +26,7 @@ public record Participant(
         int version) {
 
     public static Participant of(
-            List<String> usernames, String name) {
-        return new Participant(null, usernames, name, null, null, 0);
+            String username, String name) {
+        return new Participant(null, username, name, null, null, 0);
     }
 }

@@ -20,11 +20,11 @@ public class ParticipantJsonTests {
     @Test
     void testSerialize() throws Exception {
         var now = Instant.now();
-        var expected = new Participant(44434434L, Arrays.asList("anders.and@andeby.com", "aa@andeby.com"), "Anders And", now, now, 21);
+        var expected = new Participant(44434434L, "anders.and@andeby.com", "Anders And", now, now, 21);
         var jsonContent = json.write(expected);
 
         assertThat(jsonContent).extractingJsonPathNumberValue("@.id").isEqualTo(expected.id().intValue());
-        assertThat(jsonContent).extractingJsonPathArrayValue("@.usernames").isEqualTo(expected.usernames());
+        assertThat(jsonContent).extractingJsonPathStringValue("@.username").isEqualTo(expected.username());
         assertThat(jsonContent).extractingJsonPathStringValue("@.name").isEqualTo(expected.name());
         assertThat(jsonContent).extractingJsonPathStringValue("@.createdDate")
                 .isEqualTo(expected.createdDate().toString());
@@ -40,9 +40,7 @@ public class ParticipantJsonTests {
         var content = """
                 {
                     "id": 394,
-                    "usernames": [
-                        "joakim@vonand.dk"
-                    ],
+                    "username": "joakim@vonand.dk",
                     "name": "Joakim von And",
                     "createdDate": "2021-09-07T22:50:37.135029Z",
                     "lastModifiedDate": "2021-09-07T22:50:37.135029Z",
@@ -51,6 +49,6 @@ public class ParticipantJsonTests {
                 """;
         assertThat(json.parse(content))
                 .usingRecursiveComparison()
-                .isEqualTo(new Participant(394L, List.of("joakim@vonand.dk"), "Joakim von And", instant, instant, 21));
+                .isEqualTo(new Participant(394L, "joakim@vonand.dk", "Joakim von And", instant, instant, 21));
     }
 }

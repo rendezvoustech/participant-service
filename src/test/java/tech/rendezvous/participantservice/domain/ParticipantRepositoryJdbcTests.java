@@ -10,6 +10,7 @@ import org.springframework.test.context.ActiveProfiles;
 import tech.rendezvous.participantservice.config.DataConfig;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -30,37 +31,23 @@ public class ParticipantRepositoryJdbcTests {
     @Test
     void findParticipantByUsername() {
         var username = "anders@and.dk";
-        var participant = Participant.of(List.of(username), "Anders And");
+        var participant = Participant.of(username, "Anders And");
         jdbcAggregateTemplate.insert(participant);
 
-        List<Participant> actualParticipants = participantRepository.findByUsername(username);
+        Optional<Participant> actualParticipant = participantRepository.findByUsername(username);
 
-        assertThat(actualParticipants).isNotEmpty();
-        assertThat(actualParticipants.size()).isEqualTo(1);
-        assertThat(actualParticipants.get(0).usernames()).contains(username);
-    }
-
-    @Test
-    void findParticipantByUsernameAmongSeveral() {
-        var username = "anders@and.dk";
-        var participant = Participant.of(List.of("aa@hotmail.com", username, "a.and@andeby.dk"), "Anders And");
-        jdbcAggregateTemplate.insert(participant);
-
-        List<Participant> actualParticipants = participantRepository.findByUsername(username);
-
-        assertThat(actualParticipants).isNotEmpty();
-        assertThat(actualParticipants.size()).isEqualTo(1);
-        assertThat(actualParticipants.get(0).usernames()).contains(username);
+        assertThat(actualParticipant).isNotEmpty();
+        assertThat(actualParticipant.get().username()).isEqualTo(username);
     }
 
     @Test
     void findParticipantByUsernameNotFound() {
         var username = "anders@and.dk";
-        var participant = Participant.of(List.of(username), "Anders And");
+        var participant = Participant.of(username, "Anders And");
         jdbcAggregateTemplate.insert(participant);
 
-        List<Participant> actualParticipants = participantRepository.findByUsername(username+"aa");
+        Optional<Participant> actualParticipant = participantRepository.findByUsername(username+"aa");
 
-        assertThat(actualParticipants).isEmpty();
+        assertThat(actualParticipant).isEmpty();
     }
 }

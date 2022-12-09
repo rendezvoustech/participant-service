@@ -22,14 +22,32 @@ class ParticipantModelValidationTests {
 
     @Test
     void whenAllFieldsCorrectThenValidationSucceeds() {
-        var participant = new ParticipantModel(Set.of("anders@andeby.dk"), "Anders And");
+        var participant = new ParticipantModel("anders@andeby.dk", "Anders And");
         Set<ConstraintViolation<ParticipantModel>> violations = validator.validate(participant);
         assertThat(violations).isEmpty();
     }
 
     @Test
+    void whenUsernameIsNotDefinedThenValidationFails() {
+        var participant = new ParticipantModel(null, "Anders And");
+        Set<ConstraintViolation<ParticipantModel>> violations = validator.validate(participant);
+
+        assertThat(violations).hasSize(1);
+        assertThat(violations.iterator().next().getMessage()).isEqualTo("The username must be defined");
+    }
+
+    @Test
+    void whenUsernameIsBlankThenValidationFails() {
+        var participant = new ParticipantModel("", "Anders And");
+        Set<ConstraintViolation<ParticipantModel>> violations = validator.validate(participant);
+
+        assertThat(violations).hasSize(1);
+        assertThat(violations.iterator().next().getMessage()).isEqualTo("The username must be defined");
+    }
+
+    @Test
     void whenNameIsNotDefinedThenValidationFails() {
-        var participant = new ParticipantModel(Set.of("anders@andeby.dk"), null);
+        var participant = new ParticipantModel("anders@andeby.dk", null);
         Set<ConstraintViolation<ParticipantModel>> violations = validator.validate(participant);
 
         assertThat(violations).hasSize(1);
@@ -37,8 +55,8 @@ class ParticipantModelValidationTests {
     }
 
     @Test
-    void whenNameIsEmptyThenValidationFails() {
-        var participant = new ParticipantModel(Set.of("anders@andeby.dk"), "");
+    void whenNameIsBlankThenValidationFails() {
+        var participant = new ParticipantModel("anders@andeby.dk", "");
         Set<ConstraintViolation<ParticipantModel>> violations = validator.validate(participant);
 
         assertThat(violations).hasSize(1);

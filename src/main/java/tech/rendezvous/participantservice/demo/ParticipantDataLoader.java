@@ -24,15 +24,15 @@ public class ParticipantDataLoader {
         participantRepository.deleteAll();
        var p1 =
                 Participant.of(
-                        Arrays.asList("mail@host1.com", "anders@host2.com"),
+                        "mail@host1.com",
                         "Anders And");
         var p2 =
                 Participant.of(
-                        List.of("mail2@domain1.net"),
+                        "mail2@domain1.net",
                         "Bjarne Bed");
         var p3 =
                 Participant.of(
-                        List.of("email@cc.org"),
+                        "email@cc.org",
                         "Carlo Citron");
         participantRepository.saveAll(List.of(p1, p2, p3));
     }
