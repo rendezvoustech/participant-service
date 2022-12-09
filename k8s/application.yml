@@ -1,0 +1,10 @@
+rendezvous:
+  greeting: Welcome to the participant service from a development Kubernetes environment!
+spring:
+  datasource:
+    url: jdbc:postgresql://rendezvous-postgres/rendezvousdb_participant
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://rendezvous-keycloak/realms/RendezvousTech

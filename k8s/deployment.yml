@@ -31,14 +31,8 @@ spec:
           env:
             - name: BPL_JVM_THREAD_COUNT
               value: "50"
-            - name: SPRING_CLOUD_CONFIG_URI
-              value: http://config-service
-            - name: SPRING_DATASOURCE_URL
-              value: jdbc:postgresql://rendezvous-postgres/rendezvousdb_participant
             - name: SPRING_PROFILES_ACTIVE
               value: testdata
-            - name: SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI
-              value: http://polar-keycloak/realms/RendezvousTech
           livenessProbe:
             httpGet:
               path: /actuator/health/liveness
@@ -51,3 +45,7 @@ spec:
               port: 9001
             initialDelaySeconds: 5
             periodSeconds: 15
+      volumes:
+        - name: participant-config-volume
+          configMap:
+            name: participant-config
