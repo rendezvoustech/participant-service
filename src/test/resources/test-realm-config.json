@@ -417,7 +417,7 @@
     } ],
     "disableableCredentialTypes" : [ ],
     "requiredActions" : [ ],
-    "realmRoles" : [ "customer", "default-roles-rendezvoustech", "administrator" ],
+    "realmRoles" : [ "default-roles-rendezvoustech", "administrator" ],
     "notBefore" : 0,
     "groups" : [ ]
   } ],

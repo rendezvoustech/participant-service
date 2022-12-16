@@ -20,8 +20,6 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import tech.rendezvous.participantservice.domain.Participant;
 import tech.rendezvous.participantservice.domain.ParticipantModel;
 
-import java.util.Set;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -29,10 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Testcontainers
 class ParticipantServiceApplicationTests {
 
-    // Customer
-    private static KeycloakToken bjornTokens;
-    // Customer and employee
-    private static KeycloakToken isabelleTokens;
+    private static KeycloakToken administratorToken;
 
     @Autowired
     private WebTestClient webTestClient;
@@ -54,8 +49,8 @@ class ParticipantServiceApplicationTests {
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
                 .build();
 
-        isabelleTokens = authenticateWith("isabelle", "password", webClient);
-        bjornTokens = authenticateWith("bjorn", "password", webClient);
+        administratorToken = authenticateWith("isabelle", "password", webClient);
+
     }
 
     @Test
@@ -64,7 +59,7 @@ class ParticipantServiceApplicationTests {
         Participant expectedParticipant = webTestClient
                 .post()
                 .uri("/participants")
-                .headers(headers -> headers.setBearerAuth(isabelleTokens.accessToken()))
+                .headers(headers -> headers.setBearerAuth(administratorToken.accessToken()))
                 .bodyValue(participantToCreate)
                 .exchange()
                 .expectStatus().isCreated()
@@ -74,6 +69,7 @@ class ParticipantServiceApplicationTests {
         webTestClient
                 .get()
                 .uri("/participants/" + expectedParticipant.id())
+                .headers(headers -> headers.setBearerAuth(administratorToken.accessToken()))
                 .exchange()
                 .expectStatus().is2xxSuccessful()
                 .expectBody(Participant.class).value(actualParticipant -> {
@@ -88,7 +84,7 @@ class ParticipantServiceApplicationTests {
         webTestClient
                 .post()
                 .uri("/participants")
-                .headers(headers -> headers.setBearerAuth(isabelleTokens.accessToken()))
+                .headers(headers -> headers.setBearerAuth(administratorToken.accessToken()))
                 .bodyValue(expectedParticipantModel)
                 .exchange()
                 .expectStatus().isCreated()
@@ -100,24 +96,12 @@ class ParticipantServiceApplicationTests {
     }
 
     @Test
-    void whenPostRequestUnauthenticatedThen401() {
-        var expectedParticipant = Participant.of("username", "name");
-
-        webTestClient
-                .post()
-                .uri("/participants")
-                .bodyValue(expectedParticipant)
-                .exchange()
-                .expectStatus().isUnauthorized();
-    }
-
-    @Test
     void whenPutRequestThenParticipantUpdated() {
         var participantToCreate = new ParticipantModel("User Name", "Name");
         Participant createdParticipant = webTestClient
                 .post()
                 .uri("/participants")
-                .headers(headers -> headers.setBearerAuth(isabelleTokens.accessToken()))
+                .headers(headers -> headers.setBearerAuth(administratorToken.accessToken()))
                 .bodyValue(participantToCreate)
                 .exchange()
                 .expectStatus().isCreated()
@@ -129,7 +113,7 @@ class ParticipantServiceApplicationTests {
         webTestClient
                 .put()
                 .uri("/participants/" + createdParticipant.id())
-                .headers(headers -> headers.setBearerAuth(isabelleTokens.accessToken()))
+                .headers(headers -> headers.setBearerAuth(administratorToken.accessToken()))
                 .bodyValue(participantToUpdate)
                 .exchange()
                 .expectStatus().isOk()
@@ -146,7 +130,7 @@ class ParticipantServiceApplicationTests {
         Participant createdParticipant = webTestClient
                 .post()
                 .uri("/participants")
-                .headers(headers -> headers.setBearerAuth(isabelleTokens.accessToken()))
+                .headers(headers -> headers.setBearerAuth(administratorToken.accessToken()))
                 .bodyValue(participantToCreate)
                 .exchange()
                 .expectStatus().isCreated()
@@ -156,13 +140,14 @@ class ParticipantServiceApplicationTests {
         webTestClient
                 .delete()
                 .uri("/participants/" + createdParticipant.id())
-                .headers(headers -> headers.setBearerAuth(isabelleTokens.accessToken()))
+                .headers(headers -> headers.setBearerAuth(administratorToken.accessToken()))
                 .exchange()
                 .expectStatus().isNoContent();
 
         webTestClient
                 .get()
                 .uri("/participants/" + createdParticipant.id())
+                .headers(headers -> headers.setBearerAuth(administratorToken.accessToken()))
                 .exchange()
                 .expectStatus().isNotFound()
                 .expectBody(String.class).value(errorMessage ->

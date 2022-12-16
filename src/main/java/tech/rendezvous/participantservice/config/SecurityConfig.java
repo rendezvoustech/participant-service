@@ -1,7 +1,6 @@
 package tech.rendezvous.participantservice.config;
 
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -18,8 +17,7 @@ public class SecurityConfig {
         return http
                 .authorizeHttpRequests(authorize -> authorize
                         .mvcMatchers("/actuator/**").permitAll()
-                        .mvcMatchers(HttpMethod.GET, "/", "/participants/**").permitAll()
-                        .anyRequest().hasRole("administrator")
+                        .anyRequest().hasAnyRole("administrator", "user")
                 )
                 .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
                 .sessionManagement(sessionManagement ->
@@ -39,3 +37,4 @@ public class SecurityConfig {
         return jwtAuthenticationConverter;
     }
 }
+

@@ -9,8 +9,9 @@ import org.springframework.data.jdbc.core.JdbcAggregateTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import tech.rendezvous.participantservice.config.DataConfig;
 
-import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -29,7 +30,21 @@ public class ParticipantRepositoryJdbcTests {
     private JdbcAggregateTemplate jdbcAggregateTemplate;
 
     @Test
-    void findParticipantByUsername() {
+    void findAllParticipants() {
+        var participant1 = Participant.of("user name A", "name A");
+        var participant2 = Participant.of("user name B", "name B");
+
+        jdbcAggregateTemplate.insert(participant1);
+        jdbcAggregateTemplate.insert(participant2);
+
+        Iterable<Participant> actualParticipants = participantRepository.findAll();
+
+        assertThat(StreamSupport.stream(actualParticipants.spliterator(), true)
+                .filter(participant -> participant.username().equals(participant1.username()) || participant.username().equals(participant2.username()))
+                .collect(Collectors.toList())).hasSize(2);
+    }
+    @Test
+    void findParticipantByUsernameWhenExisting() {
         var username = "anders@and.dk";
         var participant = Participant.of(username, "Anders And");
         jdbcAggregateTemplate.insert(participant);
@@ -41,7 +56,7 @@ public class ParticipantRepositoryJdbcTests {
     }
 
     @Test
-    void findParticipantByUsernameNotFound() {
+    void findParticipantByUsernameWhenNotExisting() {
         var username = "anders@and.dk";
         var participant = Participant.of(username, "Anders And");
         jdbcAggregateTemplate.insert(participant);
@@ -49,5 +64,27 @@ public class ParticipantRepositoryJdbcTests {
         Optional<Participant> actualParticipant = participantRepository.findByUsername(username+"aa");
 
         assertThat(actualParticipant).isEmpty();
+    }
+
+    @Test
+    void existsByUsernameWhenExisting() {
+        var username = "anders@and.dk";
+        var participant = Participant.of(username, "Anders And");
+        jdbcAggregateTemplate.insert(participant);
+
+        boolean existing = participantRepository.existsByUsername(username);
+
+        assertThat(existing).isTrue();
+    }
+
+    @Test
+    void existsByUsernameWhenNotExisting() {
+        var username = "anders@and.dk";
+        var participant = Participant.of(username, "Anders And");
+        jdbcAggregateTemplate.insert(participant);
+
+        boolean existing = participantRepository.existsByUsername(username + "aa");
+
+        assertThat(existing).isFalse();
     }
 }

@@ -19,8 +19,8 @@ public class ParticipantService {
     }
 
     public Participant add(ParticipantModel model) {
-        if (!participantRepository.findByUsername(model.username()).isEmpty())
-                throw new ParticipantWithUsernameAlreadyExistsException(model.username());
+        if (participantRepository.existsByUsername(model.username()))
+            throw new ParticipantWithUsernameAlreadyExistsException(model.username());
         return participantRepository.save(Participant.of(model.username(), model.name()));
     }
 
