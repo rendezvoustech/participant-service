@@ -21,7 +21,7 @@ repositories {
 }
 
 ext {
-    set('otelVersion', "1.17.0")
+    set('otelVersion', "1.21.0")
     set('springCloudVersion', "2021.0.5")
     set('testcontainersversion', "1.17.2")
     set('testKeycloakVersion', "2.3.0")
@@ -38,9 +38,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     implementation 'org.flywaydb:flyway-core'
-    implementation "io.opentelemetry.javaagent:opentelemetry-javaagent:${otelVersion}"
 
     runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
+    runtimeOnly "io.opentelemetry.javaagent:opentelemetry-javaagent:${otelVersion}"
     runtimeOnly 'org.postgresql:postgresql'
     runtimeOnly 'io.netty:netty-resolver-dns-native-macos:4.1.80.Final:osx-aarch_64'
 
